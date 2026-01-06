@@ -3,24 +3,27 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ComplaintController;
-use App\Http\Controllers\StaffComplaintController;
 use App\Http\Controllers\StaffAuthController;
+use App\Http\Controllers\StaffComplaintController;
 use App\Http\Middleware\EnsureStaffLoggedIn;
-
 
 // Default Laravel welcome page
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Submit Complaint (Public)
+// =======================
+// Public (Submit Complaint)
+// =======================
 Route::get('/complaints/create', [ComplaintController::class, 'create'])
     ->name('complaints.create');
 
 Route::post('/complaints', [ComplaintController::class, 'store'])
     ->name('complaints.store');
 
+// =======================
 // Staff Auth
+// =======================
 Route::get('/staff/login', [StaffAuthController::class, 'showLoginForm'])
     ->name('staff.login');
 
@@ -30,8 +33,20 @@ Route::post('/staff/login', [StaffAuthController::class, 'login'])
 Route::post('/staff/logout', [StaffAuthController::class, 'logout'])
     ->name('staff.logout');
 
+// =======================
 // Staff Pages (Protected)
+// =======================
 Route::middleware([EnsureStaffLoggedIn::class])->group(function () {
+
+    // Staff list page
     Route::get('/staff/complaints', [StaffComplaintController::class, 'index'])
         ->name('staff.complaints.index');
+
+    // Staff complaint detail page
+    Route::get('/staff/complaints/{complaint}', [StaffComplaintController::class, 'show'])
+        ->name('staff.complaints.show');
+
+    // Update complaint status (dropdown save)
+    Route::patch('/staff/complaints/{complaint}/status', [StaffComplaintController::class, 'updateStatus'])
+        ->name('staff.complaints.updateStatus');
 });

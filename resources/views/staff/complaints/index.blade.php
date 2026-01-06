@@ -160,8 +160,7 @@
                             <td><span class="badge">{{ $complaint->status }}</span></td>
                             <td>{{ $complaint->created_at }}</td>
                             <td class="action">
-                                <!-- Next step: detail page -->
-                                <a href="#">View</a>
+                                <a href="{{ route('staff.complaints.show', $complaint->id) }}">View</a>
                             </td>
                         </tr>
                     @endforeach
