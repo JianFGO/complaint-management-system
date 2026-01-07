@@ -7,9 +7,14 @@ use App\Http\Controllers\StaffAuthController;
 use App\Http\Controllers\StaffComplaintController;
 use App\Http\Middleware\EnsureStaffLoggedIn;
 
-// Default Laravel welcome page
+/*
+|--------------------------------------------------------------------------
+| Default Entry Point
+|--------------------------------------------------------------------------
+| 
+*/
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('complaints.create');
 });
 
 // =======================
@@ -22,7 +27,7 @@ Route::post('/complaints', [ComplaintController::class, 'store'])
     ->name('complaints.store');
 
 // =======================
-// Staff Auth
+// Staff Authentication
 // =======================
 Route::get('/staff/login', [StaffAuthController::class, 'showLoginForm'])
     ->name('staff.login');
@@ -38,7 +43,7 @@ Route::post('/staff/logout', [StaffAuthController::class, 'logout'])
 // =======================
 Route::middleware([EnsureStaffLoggedIn::class])->group(function () {
 
-    // Staff list page
+    // Staff complaints list
     Route::get('/staff/complaints', [StaffComplaintController::class, 'index'])
         ->name('staff.complaints.index');
 
@@ -46,7 +51,7 @@ Route::middleware([EnsureStaffLoggedIn::class])->group(function () {
     Route::get('/staff/complaints/{complaint}', [StaffComplaintController::class, 'show'])
         ->name('staff.complaints.show');
 
-    // Update complaint status (dropdown save)
+    // Update complaint status
     Route::patch('/staff/complaints/{complaint}/status', [StaffComplaintController::class, 'updateStatus'])
         ->name('staff.complaints.updateStatus');
 });
